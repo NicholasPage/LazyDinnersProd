@@ -1,1 +1,22 @@
+import boto3
+import json
 
+
+def Create_Recipe():
+    """Adds a recipe to the list"""
+	#Example
+	#curl -H "Content-Type: application/json" -X POST -d '{"name":"recipename","ingredients":"ingredient1, ingredient2, ingredient3","side_ideas":"idea1, idea2, idea3","difficulty":"difficultylevel"}' http://localhost:5000/recipe/api/v1.0/newrecipe
+    if not request.json or not "name" in request.json or not "ingredients" in request.json or not "side_ideas" in request.json or not "difficulty" in request.json:
+        abort(400)
+    recipe = {
+        "name": request.json.get("name", ""),
+        "ingredients": request.json.get("ingredients", ""),
+	"side_ideas": request.json.get("side_ideas", ""),
+	"difficulty": request.json.get("difficulty", "")
+    }
+    recipes.append(recipe)
+
+    newrecipes = json.dumps(recipes)
+
+    s3.put_object(Body = newrecipes, Bucket = my_bucket, Key = my_key)
+    return jsonify({'Succesffuly added the recipe ': recipe["name"]}), 201
